@@ -23,7 +23,7 @@ import {IRiscZeroVerifier} from "risc0/IRiscZeroVerifier.sol";
 import {RiscZeroGroth16Verifier} from "risc0/groth16/RiscZeroGroth16Verifier.sol";
 import {ControlID} from "risc0/groth16/ControlID.sol";
 
-import {EvenNumber} from "../contracts/EvenNumber.sol";
+import {Keccak256} from "../contracts/Keccak256.sol";
 
 /// @notice Deployment script for the RISC Zero starter project.
 /// @dev Use the following environment variable to control the deployment:
@@ -36,7 +36,7 @@ import {EvenNumber} from "../contracts/EvenNumber.sol";
 ///
 /// https://book.getfoundry.sh/tutorials/solidity-scripting
 /// https://book.getfoundry.sh/reference/forge/forge-script
-contract EvenNumberDeploy is Script, RiscZeroCheats {
+contract Keccak256Deploy is Script, RiscZeroCheats {
     // Path to deployment config file, relative to the project root.
     string constant CONFIG_FILE = "script/config.toml";
 
@@ -96,8 +96,8 @@ contract EvenNumberDeploy is Script, RiscZeroCheats {
         }
 
         // Deploy the application contract.
-        EvenNumber evenNumber = new EvenNumber(verifier);
-        console2.log("Deployed EvenNumber to", address(evenNumber));
+        Keccak256 keccak256_ = new Keccak256(verifier);
+        console2.log("Deployed Keccak256 to", address(keccak256_));
 
         vm.stopBroadcast();
     }

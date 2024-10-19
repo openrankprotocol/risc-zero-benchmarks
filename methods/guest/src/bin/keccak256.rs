@@ -14,22 +14,33 @@
 
 use std::io::Read;
 
-use alloy_primitives::U256;
-use alloy_sol_types::SolValue;
 use risc0_zkvm::guest::env;
+use sha3::{Digest, Keccak256};
 
 fn main() {
     // Read the input data for this application.
     let mut input_bytes = Vec::<u8>::new();
     env::stdin().read_to_end(&mut input_bytes).unwrap();
+
     // Decode and parse the input
-    let number = <U256>::abi_decode(&input_bytes, true).unwrap();
+    assert!(input_bytes.len() == 32, "invalid inputs");
 
     // Run the computation.
-    // In this case, asserting that the provided number is even.
-    assert!(!number.bit(0), "number is not even");
+    // In this case, compute keccak hash
+
+    let mut output = input_bytes;
+    for _ in 0..64 {
+        output = keccak_hash(&output);
+    }
 
     // Commit the journal that will be received by the application contract.
     // Journal is encoded using Solidity ABI for easy decoding in the app contract.
-    env::commit_slice(number.abi_encode().as_slice());
+    env::commit_slice(output.as_slice());
+}
+
+fn keccak_hash(input: &[u8]) -> Vec<u8> {
+    let mut hasher = Keccak256::new();
+    hasher.update(input);
+    let output = hasher.finalize();
+    output.to_vec()
 }

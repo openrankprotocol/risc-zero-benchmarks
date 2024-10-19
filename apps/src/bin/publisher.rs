@@ -23,7 +23,7 @@ use alloy::{
 use alloy_primitives::{Address, U256};
 use anyhow::{Context, Result};
 use clap::Parser;
-use methods::IS_EVEN_ELF;
+use methods::KECCAK256_ELF;
 use risc0_ethereum_contracts::encode_seal;
 use risc0_zkvm::{default_prover, ExecutorEnv, ProverOpts, VerifierContext};
 use url::Url;
@@ -81,7 +81,7 @@ fn main() -> Result<()> {
         .prove_with_ctx(
             env,
             &VerifierContext::default(),
-            IS_EVEN_ELF,
+            KECCAK256_ELF,
             &ProverOpts::groth16(),
         )?
         .receipt;

@@ -18,33 +18,25 @@ pragma solidity ^0.8.20;
 
 import {RiscZeroCheats} from "risc0/test/RiscZeroCheats.sol";
 import {console2} from "forge-std/console2.sol";
-import {Test} from "forge-std/Test.sol";
+import {Test, console} from "forge-std/Test.sol";
 import {IRiscZeroVerifier} from "risc0/IRiscZeroVerifier.sol";
-import {EvenNumber} from "../contracts/EvenNumber.sol";
+import {Keccak256} from "../contracts/Keccak256.sol";
 import {Elf} from "./Elf.sol"; // auto-generated contract after running `cargo build`.
 
-contract EvenNumberTest is RiscZeroCheats, Test {
-    EvenNumber public evenNumber;
+contract Keccak256Test is RiscZeroCheats, Test {
+    Keccak256 public keccak256_;
 
     function setUp() public {
         IRiscZeroVerifier verifier = deployRiscZeroVerifier();
-        evenNumber = new EvenNumber(verifier);
-        assertEq(evenNumber.get(), 0);
+        keccak256_ = new Keccak256(verifier);
+        assertEq(keccak256_.get(), bytes32(0));
     }
 
-    function test_SetEven() public {
-        uint256 number = 12345678;
-        (bytes memory journal, bytes memory seal) = prove(Elf.IS_EVEN_PATH, abi.encode(number));
+    function test_set_keccak256_hash_output() public {
+        bytes32 input = bytes32(0);
+        (bytes memory journal, bytes memory seal) = prove(Elf.KECCAK256_PATH, abi.encode(input));
 
-        evenNumber.set(abi.decode(journal, (uint256)), seal);
-        assertEq(evenNumber.get(), number);
-    }
-
-    function test_SetZero() public {
-        uint256 number = 0;
-        (bytes memory journal, bytes memory seal) = prove(Elf.IS_EVEN_PATH, abi.encode(number));
-
-        evenNumber.set(abi.decode(journal, (uint256)), seal);
-        assertEq(evenNumber.get(), number);
+        keccak256_.set(abi.decode(journal, (bytes32)), seal);
+        assertEq(keccak256_.get(), bytes32(0x4220f7b47dc9e1f91e2d7c117a12e9158ce7a78185c805d21338759838f6f55d));
     }
 }
