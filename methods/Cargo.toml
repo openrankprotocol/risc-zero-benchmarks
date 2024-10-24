@@ -16,3 +16,10 @@ risc0-zkp = { workspace = true }
 alloy-primitives = { workspace = true }
 alloy-sol-types = { workspace = true }
 risc0-zkvm = { workspace = true, features = ["client"] }
+
+
+[dependencies]
+k256 = { version = "0.13", features = ["serde"] }
+rand_core = "0.6.4"
+risc0-zkvm = { workspace = true, features = ["client"] }
+hex = "0.4"

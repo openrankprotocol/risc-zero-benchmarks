@@ -20,23 +20,23 @@ import {RiscZeroCheats} from "risc0/test/RiscZeroCheats.sol";
 import {console2} from "forge-std/console2.sol";
 import {Test, console} from "forge-std/Test.sol";
 import {IRiscZeroVerifier} from "risc0/IRiscZeroVerifier.sol";
-import {Keccak256} from "../contracts/Keccak256.sol";
+import {EcdsaVerify} from "../contracts/EcdsaVerify.sol";
 import {Elf} from "./Elf.sol"; // auto-generated contract after running `cargo build`.
 
-contract Keccak256Test is RiscZeroCheats, Test {
-    Keccak256 public keccak256_;
+contract EcdsaVerifyTest is RiscZeroCheats, Test {
+    EcdsaVerify public ecdsaVerify;
 
     function setUp() public {
         IRiscZeroVerifier verifier = deployRiscZeroVerifier();
-        keccak256_ = new Keccak256(verifier);
-        assertEq(keccak256_.get(), bytes32(0));
+        ecdsaVerify = new EcdsaVerify(verifier);
     }
 
-    function test_set_keccak256_hash_output() public {
-        bytes32 input = bytes32(0);
-        (bytes memory journal, bytes memory seal) = prove(Elf.KECCAK256_PATH, abi.encode(input));
+    function test_ecdsa_verify_function() public {
+        bytes memory input = bytes(hex"0353085ba8399b9a4b186a9e749987d643a879354f6c295f944a0cc45fb6504374cbf87664b121b6374a200626e1a06dfa9ff16d9e0620491b912eff6ac210390b68a260e780ec70210ce3e5cf88ea958e78416174095a23ec64f8692717e3dde8546869732069732061206d65737361676520746861742077696c6c206265207369676e65642c20616e642076657269666965642077697468696e20746865207a6b564d");
+        (bytes memory journal, bytes memory seal) = prove(Elf.ECDSA_VERIFY_PATH, abi.encode(input));
 
-        keccak256_.set(abi.decode(journal, (bytes32)), seal);
-        assertEq(keccak256_.get(), bytes32(0x4220f7b47dc9e1f91e2d7c117a12e9158ce7a78185c805d21338759838f6f55d));
+        bytes memory journal_ = abi.decode(journal, (bytes));
+        ecdsaVerify.verify(journal_, seal);
+        // assertEq(ecdsaVerify.get(), bytes32(0x4220f7b47dc9e1f91e2d7c117a12e9158ce7a78185c805d21338759838f6f55d));
     }
 }
